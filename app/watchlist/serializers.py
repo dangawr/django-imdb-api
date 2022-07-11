@@ -1,12 +1,13 @@
 from rest_framework import serializers
-from .models import WatchList, StreamPlatform, Review
+from .models import Watch, StreamPlatform, Review
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    review_user = serializers.StringRelatedField(read_only=True)
 
     class Meta:
         model = Review
-        fields = "__all__"
+        exclude = ('watch',)
         read_only_fields = ['id']
 
 
@@ -14,13 +15,13 @@ class WatchListSerializer(serializers.ModelSerializer):
     reviews = ReviewSerializer(many=True, read_only=True)
 
     class Meta:
-        model = WatchList
-        fields = ['id', 'title', 'storyline', 'created']
+        model = Watch
+        fields = "__all__"
         read_only_fields = ['id']
 
 
-class StreamPlatformSerializer(serializers.HyperlinkedModelSerializer):
-    watchlist = WatchListSerializer(many=True, read_only=True)
+class StreamPlatformSerializer(serializers.ModelSerializer):
+    watch = WatchListSerializer(many=True, read_only=True)
 
     class Meta:
         model = StreamPlatform
