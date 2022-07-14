@@ -46,7 +46,7 @@ class ReviewView(generics.ListAPIView):
 
     def get_queryset(self):
         pk = self.kwargs['pk']
-        return Review.objects.filter(watchlist=pk)
+        return Review.objects.filter(watch=pk)
 
 
 class StreamPlatformViewSet(viewsets.ModelViewSet):
