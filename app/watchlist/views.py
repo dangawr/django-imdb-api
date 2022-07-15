@@ -2,13 +2,14 @@ from .models import Watch, StreamPlatform, Review
 from .serializers import WatchListSerializer, StreamPlatformSerializer, ReviewSerializer
 from rest_framework import generics, viewsets
 from rest_framework.exceptions import ValidationError
-from .permissions import ReviewUserOrReadOnly
+from .permissions import IsReviewUserOrReadOnly, IsAdminOrReadOnly
 from rest_framework.permissions import IsAuthenticated
 
 
 class ReviewCreateView(generics.CreateAPIView):
 
     serializer_class = ReviewSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return Review.objects.all()
@@ -36,13 +37,12 @@ class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [ReviewUserOrReadOnly]
+    permission_classes = [IsReviewUserOrReadOnly]
 
 
 class ReviewView(generics.ListAPIView):
 
     serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         pk = self.kwargs['pk']
@@ -53,15 +53,19 @@ class StreamPlatformViewSet(viewsets.ModelViewSet):
 
     queryset = StreamPlatform.objects.all()
     serializer_class = StreamPlatformSerializer
+    permission_classes = [IsAdminOrReadOnly]
 
 
 class WatchListView(generics.ListCreateAPIView):
 
     queryset = Watch.objects.all()
     serializer_class = WatchListSerializer
+    permission_classes = [IsAdminOrReadOnly]
 
 
 class WatchListDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = Watch.objects.all()
     serializer_class = WatchListSerializer
+    permission_classes = [IsAdminOrReadOnly]
+
