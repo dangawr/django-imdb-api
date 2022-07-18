@@ -4,6 +4,7 @@ from rest_framework import generics, viewsets
 from rest_framework.exceptions import ValidationError
 from .permissions import IsReviewUserOrReadOnly, IsAdminOrReadOnly
 from rest_framework.permissions import IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class ReviewCreateView(generics.CreateAPIView):
@@ -61,6 +62,8 @@ class WatchListView(generics.ListCreateAPIView):
     queryset = Watch.objects.all()
     serializer_class = WatchListSerializer
     permission_classes = [IsAdminOrReadOnly]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['title', 'platform__name']
 
 
 class WatchListDetailView(generics.RetrieveUpdateDestroyAPIView):
