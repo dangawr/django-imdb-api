@@ -5,6 +5,7 @@ from rest_framework.exceptions import ValidationError
 from .permissions import IsReviewUserOrReadOnly, IsAdminOrReadOnly
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
+from .paginnation import WatchListPagination
 
 
 class ReviewCreateView(generics.CreateAPIView):
@@ -64,6 +65,7 @@ class WatchListView(generics.ListCreateAPIView):
     permission_classes = [IsAdminOrReadOnly]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['title', 'platform__name']
+    pagination_class = [WatchListPagination]
 
 
 class WatchListDetailView(generics.RetrieveUpdateDestroyAPIView):

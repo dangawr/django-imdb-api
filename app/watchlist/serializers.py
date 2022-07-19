@@ -19,7 +19,7 @@ class WatchListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Watch
         fields = "__all__"
-        read_only_fields = ['id']
+        read_only_fields = ['id', 'avg_rating', 'ratings_number']
 
 
 class StreamPlatformSerializer(serializers.ModelSerializer):
