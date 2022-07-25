@@ -3,6 +3,9 @@ from . import views
 from rest_framework.routers import DefaultRouter
 
 
+app_name = 'watchlist'
+
+
 router = DefaultRouter()
 
 router.register('stream', views.StreamPlatformViewSet, basename='stream')
