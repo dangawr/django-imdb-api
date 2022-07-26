@@ -25,7 +25,6 @@ class NormalUserTests(APITestCase):
         self.platform = StreamPlatform.objects.create(**payload)
 
     def test_stream_platform_create(self):
-
         payload = {
             'name': 'Stream 2',
             'about': 'Some text',
@@ -36,27 +35,23 @@ class NormalUserTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_stream_platform_list(self):
-
         response = self.client.get(STREAM_URL)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_stream_platform_retrieve(self):
-
         pk = self.platform.id
         response = self.client.get(stream_detail_url(pk))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_stream_platform_delete(self):
-
         pk = self.platform.id
         response = self.client.delete(stream_detail_url(pk))
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_stream_platform_patch(self):
-
         payload = {
             'about': 'edited text',
         }

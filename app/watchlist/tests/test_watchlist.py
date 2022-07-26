@@ -27,7 +27,6 @@ class NormalUserTests(APITestCase):
                                           storyline="Example Movie", active=True)
 
     def test_watchlist_create(self):
-
         payload = {
             'title': 'test title 1',
             'storyline': 'test storyline',
