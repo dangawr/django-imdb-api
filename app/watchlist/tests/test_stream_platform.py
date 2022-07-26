@@ -3,7 +3,6 @@ from django.urls import reverse
 from watchlist.models import StreamPlatform
 from django.contrib.auth.models import User
 from rest_framework import status
-from rest_framework.authtoken.models import Token
 
 
 STREAM_URL = reverse('watchlist:stream-list')

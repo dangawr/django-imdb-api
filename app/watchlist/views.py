@@ -65,7 +65,7 @@ class WatchListView(generics.ListCreateAPIView):
     permission_classes = [IsAdminOrReadOnly]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['title', 'platform__name']
-    pagination_class = [WatchListPagination]
+    pagination_class = WatchListPagination
 
 
 class WatchListDetailView(generics.RetrieveUpdateDestroyAPIView):
