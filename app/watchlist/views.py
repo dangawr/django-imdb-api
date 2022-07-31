@@ -1,15 +1,18 @@
-from .models import Watch, StreamPlatform, Review
-from .serializers import WatchListSerializer, StreamPlatformSerializer, ReviewSerializer
+from .models import Watchlist, StreamPlatform, Review
+from .serializers import (
+    WatchListSerializer,
+    StreamPlatformSerializer,
+    ReviewSerializer)
 from rest_framework import generics, viewsets
 from rest_framework.exceptions import ValidationError
-from .permissions import IsReviewUserOrReadOnly, IsAdminOrReadOnly
+from .permissions import IsReviewUserOrReadOnly
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from .paginnation import WatchListPagination
 
 
 class ReviewCreateView(generics.CreateAPIView):
-
+    """View for review creating."""
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated]
 
@@ -18,59 +21,71 @@ class ReviewCreateView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         pk = self.kwargs['pk']
-        watch = Watch.objects.get(pk=pk)
+        watchlist = Watchlist.objects.get(pk=pk)
         user = self.request.user
-        user_review = Review.objects.filter(watch=watch, review_user=user)
+        user_review = Review.objects.filter(
+            watchlist=watchlist,
+            review_user=user
+        )
 
         if user_review.exists():
-            raise ValidationError("You have commented this watch!")
+            raise ValidationError("You have commented this Title!")
 
-        if watch.avg_rating == 0:
-            watch.avg_rating = serializer.validated_data['rating']
+        if watchlist.avg_rating == 0:
+            watchlist.avg_rating = serializer.validated_data['rating']
         else:
-            watch.avg_rating = (watch.avg_rating + serializer.validated_data['rating']) / 2
+            watchlist.avg_rating = (watchlist.avg_rating + serializer.validated_data['rating']) / 2
 
-        watch.ratings_number += 1
-        watch.save()
-        serializer.save(watch=watch, review_user=user)
+        watchlist.ratings_number += 1
+        watchlist.save()
+        serializer.save(watchlist=watchlist, review_user=user)
 
 
 class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):
-
+    """Manage for reviews in database."""
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [IsReviewUserOrReadOnly]
 
 
 class ReviewView(generics.ListAPIView):
-
+    """Manage for reviews in database."""
     serializer_class = ReviewSerializer
 
     def get_queryset(self):
         pk = self.kwargs['pk']
-        return Review.objects.filter(watch=pk)
+        return Review.objects.filter(watchlist=pk)
 
 
 class StreamPlatformViewSet(viewsets.ModelViewSet):
-
+    """View for manage stream platforms."""
     queryset = StreamPlatform.objects.all()
     serializer_class = StreamPlatformSerializer
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAuthenticated]
 
 
-class WatchListView(generics.ListCreateAPIView):
-
-    queryset = Watch.objects.all()
+class WatchListView(generics.ListAPIView):
+    """View for list or create watchlist."""
+    queryset = Watchlist.objects.all()
     serializer_class = WatchListSerializer
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['title', 'platform__name']
     pagination_class = WatchListPagination
 
 
-class WatchListDetailView(generics.RetrieveUpdateDestroyAPIView):
-
-    queryset = Watch.objects.all()
+class WatchListCreateApiView(generics.CreateAPIView):
+    """View for tittle creating. Please pass the stream platform ID"""
     serializer_class = WatchListSerializer
-    permission_classes = [IsAdminOrReadOnly]
 
+    def perform_create(self, serializer):
+        pk = self.kwargs['pk']
+        stream_platform = StreamPlatform.objects.get(pk=pk)
+        serializer.save(platform=stream_platform)
+
+
+class WatchListDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """Title details view."""
+    queryset = Watchlist.objects.all()
+    serializer_class = WatchListSerializer
+    permission_classes = [IsAuthenticated]

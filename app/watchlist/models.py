@@ -14,27 +14,43 @@ class StreamPlatform(models.Model):
         return self.name
 
 
-class Watch(models.Model):
+class Watchlist(models.Model):
     title = models.CharField(max_length=50)
     avg_rating = models.FloatField(default=0)
     ratings_number = models.IntegerField(default=0)
     storyline = models.CharField(max_length=200)
     active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
-    platform = models.ForeignKey(StreamPlatform, on_delete=models.CASCADE, related_name='watch')
+    platform = models.ForeignKey(
+        StreamPlatform,
+        on_delete=models.CASCADE,
+        related_name='watchlist'
+    )
 
     def __str__(self):
         return self.title
 
 
 class Review(models.Model):
-    review_user = models.ForeignKey(User, on_delete=models.CASCADE)
-    rating = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
-    description = models.CharField(max_length=200, null=True)
-    watch = models.ForeignKey(Watch, on_delete=models.CASCADE, related_name="reviews")
+    review_user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
+    rating = models.PositiveIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)]
+    )
+    description = models.CharField(
+        max_length=200,
+        null=True
+    )
+    watchlist = models.ForeignKey(
+        Watchlist,
+        on_delete=models.CASCADE,
+        related_name="reviews"
+    )
     active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     update = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return str(self.rating) + " | " + self.watch.title + " | " + str(self.watch.review_user)
+        return str(self.rating) + " | " + self.watchlist.title + " | " + str(self.watchlist.review_user)

@@ -1,11 +1,11 @@
 from rest_framework.authtoken.views import obtain_auth_token
-from .views import register_view, logout_view
+from .views import logout_view, RegisterUserApiView
 from django.urls import path
 
 app_name = 'user'
 
 urlpatterns = [
     path('token/', obtain_auth_token, name='token'),
-    path('register/', register_view, name='register'),
+    path('register/', RegisterUserApiView.as_view(), name='register'),
     path('logout/', logout_view, name='logout'),
 ]

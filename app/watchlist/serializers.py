@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Watch, StreamPlatform, Review
+from .models import Watchlist, StreamPlatform, Review
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -7,17 +7,16 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Review
-        exclude = ('watch',)
+        exclude = ('watchlist',)
         read_only_fields = ['id']
 
 
 class WatchListSerializer(serializers.ModelSerializer):
     reviews = ReviewSerializer(many=True, read_only=True)
     platform = serializers.CharField(source="platform.name", read_only=True)
-    # platform = serializers.StringRelatedField()  # in this case, the same display as above /\
 
     class Meta:
-        model = Watch
+        model = Watchlist
         fields = "__all__"
         read_only_fields = ['id', 'avg_rating', 'ratings_number']
 

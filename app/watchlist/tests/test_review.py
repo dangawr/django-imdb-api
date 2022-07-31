@@ -1,6 +1,6 @@
 from rest_framework.test import APITestCase
 from django.urls import reverse
-from watchlist.models import StreamPlatform, Watch, Review
+from watchlist.models import StreamPlatform, Watchlist, Review
 from django.contrib.auth.models import User
 from rest_framework import status
 from watchlist.serializers import ReviewSerializer
@@ -27,8 +27,12 @@ class UnAuthUserTests(APITestCase):
             'website': 'http://test.com',
         }
         self.platform = StreamPlatform.objects.create(**payload)
-        self.watch = Watch.objects.create(platform=self.platform, title="Example Movie",
-                                          storyline="Example Movie", active=True)
+        self.watchlist = Watchlist.objects.create(
+            platform=self.platform,
+            title="Example Movie",
+            storyline="Example Movie",
+            active=True
+        )
 
     def test_review_create(self):
         payload = {
@@ -37,7 +41,7 @@ class UnAuthUserTests(APITestCase):
             "active": True
         }
 
-        response = self.client.post(review_create_url(self.watch.id), payload)
+        response = self.client.post(review_create_url(self.watchlist.id), payload)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
@@ -52,15 +56,19 @@ class NormalUserTests(APITestCase):
             'website': 'http://test.com',
         }
         self.platform = StreamPlatform.objects.create(**payload)
-        self.watch = Watch.objects.create(platform=self.platform, title="Example Movie",
-                                          storyline="Example Movie", active=True)
+        self.watch = Watchlist.objects.create(
+            platform=self.platform,
+            title="Example Movie",
+            storyline="Example Movie",
+            active=True
+        )
 
     def test_review_list(self):
         payload = {
             "rating": 5,
             "description": "Great Movie!",
             "active": True,
-            "watch": self.watch,
+            "watchlist": self.watch,
             "review_user": self.user,
         }
         Review.objects.create(**payload)
@@ -92,7 +100,7 @@ class NormalUserTests(APITestCase):
             "rating": 5,
             "description": "Great Movie!",
             "active": True,
-            "watch": self.watch,
+            "watchlist": self.watch,
             "review_user": self.user,
         }
         review = Review.objects.create(**payload)
@@ -114,7 +122,7 @@ class NormalUserTests(APITestCase):
             "rating": 5,
             "description": "Great Movie!",
             "active": True,
-            "watch": self.watch,
+            "watchlist": self.watch,
             "review_user": self.user,
         }
         review = Review.objects.create(**payload)

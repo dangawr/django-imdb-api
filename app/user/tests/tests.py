@@ -28,7 +28,9 @@ class PublicUserApiTests(APITestCase):
 class LoginUserApiTests(APITestCase):
 
     def setUp(self):
-        self.user = User.objects.create_user(username='testcase', password='test123')
+        self.user = User.objects.create_user(
+            username='testcase', password='test123'
+        )
 
     def test_login(self):
         payload = {
@@ -46,4 +48,3 @@ class LoginUserApiTests(APITestCase):
         response = self.client.post(LOGOUT_URL)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-

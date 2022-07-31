@@ -32,7 +32,7 @@ class NormalUserTests(APITestCase):
         }
         response = self.client.post(STREAM_URL, payload)
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_stream_platform_list(self):
         response = self.client.get(STREAM_URL)
@@ -49,7 +49,7 @@ class NormalUserTests(APITestCase):
         pk = self.platform.id
         response = self.client.delete(stream_detail_url(pk))
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_stream_platform_patch(self):
         payload = {
@@ -59,4 +59,4 @@ class NormalUserTests(APITestCase):
         pk = self.platform.id
         response = self.client.patch(stream_detail_url(pk), payload)
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

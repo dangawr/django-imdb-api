@@ -3,7 +3,9 @@ from django.contrib.auth.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
-    password2 = serializers.CharField(write_only=True, style={'input_type': 'password'})
+    password2 = serializers.CharField(
+        write_only=True, style={'input_type': 'password'}
+    )
 
     class Meta:
         model = User
@@ -18,10 +20,14 @@ class UserSerializer(serializers.ModelSerializer):
         password2 = self.validated_data['password2']
 
         if password != password2:
-            raise serializers.ValidationError({'error': 'Passwords must be the same'})
+            raise serializers.ValidationError(
+                {'error': 'Passwords must be the same'}
+            )
 
         if User.objects.filter(email=self.validated_data['email']).exists():
-            raise serializers.ValidationError({'error': 'Email already exists!'})
+            raise serializers.ValidationError(
+                {'error': 'Email already exists!'}
+            )
 
         user = User(
             username=self.validated_data['username'],
