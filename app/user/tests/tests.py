@@ -8,6 +8,7 @@ from rest_framework.authtoken.models import Token
 CREATE_USER_URL = reverse('user:register')
 TOKEN_URL = reverse('user:token')
 LOGOUT_URL = reverse('user:logout')
+ME_URL = reverse('user:me')
 
 
 class PublicUserApiTests(APITestCase):
@@ -55,4 +56,25 @@ class RegisteredUserApiTests(APITestCase):
         response = self.client.post(reverse('password_reset:reset-password-request'), {'email': self.user.email})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_retrieve_user(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(ME_URL)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['email'], self.user.email)
+
+    def test_update_user_data(self):
+        self.client.force_authenticate(user=self.user)
+        payload = {
+            'username': 'another_username',
+            'password': 'another_password',
+        }
+        response = self.client.patch(ME_URL, payload)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.check_password(payload['password']))
+        self.assertEqual(payload.get('username'), self.user.username)
+
 
