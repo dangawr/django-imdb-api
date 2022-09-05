@@ -2,7 +2,16 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
 
+import uuid
+import os
+
 # Create your models here.
+
+
+def watchlist_file_upload_path(instance, filename):
+    ext = os.path.splitext(filename)[1]
+    filename = f"{uuid.uuid4()}{ext}"
+    return os.path.join('uploads', 'watchlist', filename)
 
 
 class StreamPlatform(models.Model):
@@ -26,6 +35,7 @@ class Watchlist(models.Model):
         on_delete=models.CASCADE,
         related_name='watchlist'
     )
+    image = models.ImageField(null=True, upload_to=watchlist_file_upload_path)
 
     def __str__(self):
         return self.title
