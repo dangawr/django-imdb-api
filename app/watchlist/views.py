@@ -5,7 +5,7 @@ from .serializers import (
     ReviewSerializer,
     WatchlistUploadImageSerializer
     )
-from rest_framework import generics, viewsets, views, status, parsers, renderers
+from rest_framework import generics, viewsets, status, parsers
 from rest_framework.exceptions import ValidationError
 from .permissions import IsReviewUserOrReadOnly
 from rest_framework.permissions import IsAuthenticated
