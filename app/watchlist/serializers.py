@@ -28,3 +28,11 @@ class StreamPlatformSerializer(serializers.ModelSerializer):
         model = StreamPlatform
         fields = "__all__"
         read_only_fields = ['id']
+
+
+class WatchlistUploadImageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Watchlist
+        fields = ['id', 'image']
+        read_only_fields = ['id']

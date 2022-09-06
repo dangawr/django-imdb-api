@@ -2,13 +2,16 @@ from .models import Watchlist, StreamPlatform, Review
 from .serializers import (
     WatchListSerializer,
     StreamPlatformSerializer,
-    ReviewSerializer)
-from rest_framework import generics, viewsets
+    ReviewSerializer,
+    WatchlistUploadImageSerializer
+    )
+from rest_framework import generics, viewsets, views, status, parsers, renderers
 from rest_framework.exceptions import ValidationError
 from .permissions import IsReviewUserOrReadOnly
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from .paginnation import WatchListPagination
+from rest_framework.response import Response
 
 
 class ReviewCreateView(generics.CreateAPIView):
@@ -89,3 +92,17 @@ class WatchListDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Watchlist.objects.all()
     serializer_class = WatchListSerializer
     permission_classes = [IsAuthenticated]
+
+
+class WatchlistUploadImageApiView(generics.GenericAPIView):
+    parser_classes = (parsers.FormParser, parsers.MultiPartParser, parsers.FileUploadParser)
+    serializer_class = WatchlistUploadImageSerializer
+
+    def post(self, request, pk):
+        watchlist = Watchlist.objects.get(pk=pk)
+        serializer = self.serializer_class(instance=watchlist, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
