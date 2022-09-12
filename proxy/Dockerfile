@@ -2,8 +2,6 @@ FROM nginxinc/nginx-unprivileged:1-alpine
 LABEL maintainer="sloniupck"
 
 COPY ./default.conf.tpl /etc/nginx/default.conf.tpl
-COPY ./default-ssl.conf.tpl /etc/nginx/default-ssl.conf.tpl
-COPY ./options-ssl-nginx.conf /etc/nginx/options-ssl-nginx.conf
 COPY ./uwsgi_params /etc/nginx/uwsgi_params
 COPY ./run.sh /run.sh
 
@@ -20,7 +18,6 @@ RUN mkdir -p /vol/static && \
     chmod +x /run.sh
 
 VOLUME /vol/static
-VOLUME /vol/www
 
 USER nginx
 
