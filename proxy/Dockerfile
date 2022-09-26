@@ -10,8 +10,6 @@ ENV APP_PORT=9000
 
 USER root
 
-USER root
-
 RUN apk add --no-cache openssl bash
 RUN chmod +x /run.sh
 
